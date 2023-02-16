@@ -1,0 +1,109 @@
+version: 2.1
+orbs:
+  github-cli: circleci/github-cli@2.2.0
+jobs:
+  create_pull_request:
+    docker:
+      - image: 'cimg/node:18.14.0'
+    steps:
+      - gh/setup
+      - run:
+          name: Create Pull Request
+          command: gh pr create --fill --base dev
+  build_feature:
+    working_directory: ~/repo
+    docker:
+      - image: 'cimg/node:18.14.0'
+    steps:
+      - checkout
+      - run:
+          name: Update NPM
+          command: sudo npm install -g npm@9.4.2
+      - restore_cache:
+          key: 'dependency-cache-{{ checksum "package-lock.json" }}'
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: 'dependency-cache-{{ checksum "package-lock.json" }}'
+          paths:
+            - ./node_modules
+      - run:
+          name: Run lint
+          command: npm run lint
+      - run:
+          name: Run build
+          command: npm run build
+  build_dev:
+    working_directory: ~/repo
+    docker:
+      - image: 'cimg/node:18.14.0'
+    steps:
+      - checkout
+      - run:
+          name: Update NPM
+          command: sudo npm install -g npm@9.4.2
+      - restore_cache:
+          key: 'dependency-cache-{{ checksum "package-lock.json" }}'
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: 'dependency-cache-{{ checksum "package-lock.json" }}'
+          paths:
+            - ./node_modules
+      - run:
+          name: Run lint
+          command: npm run lint
+  build_main:
+    working_directory: ~/repo
+    docker:
+      - image: 'cimg/node:18.14.0'
+    steps:
+      - checkout
+      - run:
+          name: Update NPM
+          command: sudo npm install -g npm@9.4.2
+      - restore_cache:
+          key: 'dependency-cache-{{ checksum "package-lock.json" }}'
+      - run:
+          name: Install Dependencies
+          command: npm install
+      - save_cache:
+          key: 'dependency-cache-{{ checksum "package-lock.json" }}'
+          paths:
+            - ./node_modules
+      - run:
+          name: Run lint
+          command: npm run lint
+workflows:
+  feature:
+    jobs:
+      - build_feature:
+          filters:
+            branches:
+              ignore:
+                - dev
+                - main
+      - create_pull_request:
+        filters:
+          branches:
+            ignore:
+              - dev
+              - main
+        requires:
+          - build_feature
+  dev:
+    jobs:
+      - build_dev:
+          filters:
+            branches:
+              only:
+                - dev
+  main:
+    jobs:
+      - build_main:
+          filters:
+            branches:
+              only:
+                - main
