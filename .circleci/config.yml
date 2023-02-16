@@ -78,7 +78,7 @@ workflows:
                 - dev
                 - main
       - gh/pr-merge:
-          token: $GITHUB_TOKEN
+          token: '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'
           filters:
             branches:
               ignore:
