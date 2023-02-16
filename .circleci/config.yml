@@ -78,8 +78,7 @@ workflows:
                 - dev
                 - main
       - gh/pr-merge:
-          token:
-            default: $GITHUB_TOKEN
+          token: $GITHUB_TOKEN
           filters:
             branches:
               ignore:
