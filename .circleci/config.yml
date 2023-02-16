@@ -86,11 +86,11 @@ workflows:
                 - dev
                 - main
       - create_pull_request:
-        filters:
-          branches:
-            ignore:
-              - dev
-              - main
+          filters:
+            branches:
+              ignore:
+                - dev
+                - main
         requires:
           - build_feature
   dev:
