@@ -7,8 +7,8 @@ jobs:
       - image: 'cimg/node:18.14.0'
     steps:
       - gh/setup
-          context:
-            - GITHUB_CREDS
+          parameters:
+            token: $GITHUB_TOKEN
       - run:
           name: Create Pull Request
           command: gh pr create --fill --base dev
@@ -88,8 +88,6 @@ workflows:
                 - dev
                 - main
       - create_pull_request:
-          context:
-            - GITHUB_CREDS
           filters:
             branches:
               ignore:
