@@ -7,6 +7,8 @@ jobs:
       - image: 'cimg/node:18.14.0'
     steps:
       - gh/setup
+          context:
+            - GITHUB_CREDS
       - run:
           name: Create Pull Request
           command: gh pr create --fill --base dev
