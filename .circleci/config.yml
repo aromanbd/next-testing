@@ -2,14 +2,6 @@ version: 2.1
 orbs:
   gh: circleci/github-cli@2.2.0
 jobs:
-  create_pull_request:
-    docker:
-      - image: 'cimg/node:18.14.0'
-    steps:
-      - gh/setup
-      - run:
-          name: Create Pull Request
-          command: gh pr create --fill --base dev
   build_feature:
     working_directory: ~/repo
     docker:
@@ -85,14 +77,6 @@ workflows:
               ignore:
                 - dev
                 - main
-      - create_pull_request:
-          filters:
-            branches:
-              ignore:
-                - dev
-                - main
-          requires:
-            - build_feature
   dev:
     jobs:
       - build_dev:
